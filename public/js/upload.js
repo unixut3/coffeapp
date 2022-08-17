@@ -1,95 +1,31 @@
-
 import {
-    onGetTasks,
-    saveTask,
-    deleteTask,
-    getTask,
-    updateTask,
-    getTasks,
-  } from "./firebase.js";
-
-  import { 
-    getStorage,
+  onGetTasks, 
+  saveTask, 
+  deleteTask, 
+  getTask, 
+  updateTask, 
+  getTasks,
+} from "./firebase.js";
+import { 
+    getStorage, 
     ref, 
     uploadBytesResumable, 
     getDownloadURL, 
   } from "https://www.gstatic.com/firebasejs/9.6.2/firebase-storage.js";
   
+  const storage = getStorage();
+
   const taskForm = document.getElementById("task-form");
   const tasksContainer = document.getElementById("tasks-container");
-  const storage = getStorage();
 
   let editStatus = false;
   let id = "";
+  var beenCnt = 1;
   
-  window.addEventListener("DOMContentLoaded", async (e) => {
-    // const querySnapshot = await getTasks();
-  
-    //처음 로드되면 실행
-    onGetTasks((querySnapshot) => {
-      tasksContainer.innerHTML = "";
-      
-      //doc에 있는 목록 가져오기
-      querySnapshot.forEach((doc) => {
-        const task = doc.data();
-  
-        tasksContainer.innerHTML += `
-          <div class="card card-body mt-2 border-primary">
-            <h3 class="h5">${task.rosteryName}</h3>
-            <p>${task.location}</p>
-            <image src="${task.imageUrl}" class="thumbnail"></image>
-          <div>
-            <button class="btn btn-primary btn-delete" data-id="${doc.id}">
-              🗑 Delete
-            </button>
-            <button class="btn btn-secondary btn-edit" data-id="${doc.id}">
-              🖉 Edit
-            </button>
-          </div>
-        </div>`;
-      });
-  
-      //삭제버튼
-      const btnsDelete = tasksContainer.querySelectorAll(".btn-delete");
-      btnsDelete.forEach((btn) =>
-        btn.addEventListener("click", async ({ target: { dataset } }) => {
-          var ret = confirm('삭제하시겠습니까?')
-          if (ret){
-            try {
-              await deleteTask(dataset.id);
-              alert('삭제완료');
-            } catch (error) {
-              console.log(error);
-            }
-          } 
-        })
-      );
-  
-      //수정버튼
-      const btnsEdit = tasksContainer.querySelectorAll(".btn-edit");
-      btnsEdit.forEach((btn) => {
-        btn.addEventListener("click", async (e) => {
-          try {
-            const doc = await getTask(e.target.dataset.id);
-            const task = doc.data();
-            taskForm["task-rosteryName"].value = task.rosteryName;
-            taskForm["task-location"].value = task.location;
-            
-            editStatus = true;
-            id = doc.id;
-            taskForm["btn-task-form"].innerText = "Update";
-            taskForm["btn-cancel-form"].style = "display";
-            alert('수정완료');
-          } catch (error) {
-            console.log(error);
-          }
-        });
-      });
-    });
-  });
-  
+    
   //저장버튼 버튼 이벤트
-  taskForm.addEventListener("submit", async (e) => {
+  const saveBtn = document.getElementById("btn-task-form");
+  saveBtn.addEventListener("click", async (e) => {
     e.preventDefault();
   
     const rosteryName = taskForm["task-rosteryName"];
@@ -115,7 +51,7 @@ import {
         }
     
         taskForm.reset();
-        rosteryName.focus();
+        window.location.href = "/public/index.html";
         alert('저장완료');
       } catch (error) {
         console.log(error);
@@ -144,7 +80,7 @@ import {
     
     // Listen for state changes, errors, and completion of the upload.
     uploadTask.on('state_changed',
-    (snapshot) => {debugger
+    (snapshot) => {
       // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
       const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
       console.log('Upload is ' + progress + '% done');
@@ -179,4 +115,17 @@ import {
     );
   });
 
-  
+  //증감버튼
+  $('#btn-plus').click(function(){
+    beenCnt++;
+    document.getElementById('beenCnt').innerText = beenCnt;
+  });
+
+  $('#btn-minus').click(function(){
+    if(beenCnt != 0){
+      beenCnt--;
+    } else {
+      beenCnt = 0
+    }
+    document.getElementById('beenCnt').innerText = beenCnt;
+  });
