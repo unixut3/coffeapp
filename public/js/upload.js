@@ -1,17 +1,13 @@
 import {
-  onGetTasks, 
   saveTask, 
-  deleteTask, 
-  getTask, 
   updateTask, 
-  getTasks,
 } from "./firebase.js";
 import { 
     getStorage, 
     ref, 
     uploadBytesResumable, 
     getDownloadURL, 
-  } from "https://www.gstatic.com/firebasejs/9.6.2/firebase-storage.js";
+  } from "https://www.gstatic.com/firebasejs/9.9.1/firebase-storage.js";
   
   const storage = getStorage();
 
@@ -114,18 +110,18 @@ import {
   });
 
   //업로드 버튼 클릭
-  $('#btn-Upload').click(function(){
-    const metadata = {
-      contentType: 'image/jpeg'
-    };
+  const uploadBtn = document.getElementById("btn-upload");
+  uploadBtn.addEventListener("click", async (e) => {
+
     const file = document.querySelector('#image').files[0];
+
     if(file == null){
       alert("선택된  파일이 없습니다.");
       return;
     }
 
     const storageRef = ref(storage, 'images/' + file.name);
-    const uploadTask = uploadBytesResumable(storageRef, file, metadata);
+    const uploadTask = uploadBytesResumable(storageRef, file);
     
     // Listen for state changes, errors, and completion of the upload.
     uploadTask.on('state_changed',
@@ -143,25 +139,19 @@ import {
       }
     },
     (error) => {
-      switch (error.code) {
-        case 'storage/unauthorized':
-          // User doesn't have permission to access the object
-          break;
-        case 'storage/canceled':
-          // User canceled the upload
-          break;
-        case 'storage/unknown':
-          // Unknown error occurred, inspect error.serverResponse
-          break;
-      }
+      console.log("Error : " + error);
     },
     () => {
       // Upload completed successfully, now we can get the download URL
-      getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {debugger
+      getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
         console.log('File available at', downloadURL);
       });
     }
     );
+  });
+
+  $('#btn-Upload').click(function(){
+    
   });
 
  
