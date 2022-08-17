@@ -41,7 +41,7 @@
         <div class="col-md-6">
           <div class="card">
             <div class="card-body">
-              <h1 class="h4">Add Rostery</h1>
+              <h1 class="h4">로스터리 추가</h1>
               <form id="task-form">
                 <label for="rosteryName">rosteryName:</label>
                 <input type="text" id="task-rosteryName" class="form-control mb-3" class="My First Title" placeholder="rosteryName" autofocus/>
@@ -58,25 +58,32 @@
                 <label for="store">store:</label>
                 <input id="task-store" class="form-control mb-3" placeholder="store"></input>
                 <label for="description">description:</label>
-                <textarea row = 3 id="task-description" class="form-control mb-3" placeholder="description"></textarea>
-
-                <div id="beenCntTable">
-                  <button class="btn-primary" name="btn-minus" id="btn-minus">-</button>
-                  <label for="been" id="beenCnt">1</label>
-                  <button class="btn-primary" id="btn-plus">+</button>
-                </div>
-
-                <br><br>
-
-                <div>
-                  <label for="been">been List:</label>
-                  <input id="task-been" class="form-control mb-3" placeholder="been"></input>
-                  <input type="file" class="form-control mt-2" id="image" style="margin-bottom:10px;">
-                </div>
+                <textarea row = 5 id="task-description" class="form-control mb-3" placeholder="description"></textarea>
                 <button class="btn btn-primary" id="btn-task-form">Save</button>
                 <button class="btn btn-danger" id="btn-Upload">Upload</button>
                 <button class="btn btn-secondary" id="btn-cancel-form" style="display: none">Cancel</button>
               </form>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <h1 class="h4">원두 목록</h1>
+              <div>
+                <table>
+                  <thead>
+                    <tr>
+                      <th style="width: 200px;">이름</th>
+                      <th style="width: 120px;">무게</th>
+                      <th style="width: 120px;">가격</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tr-beenList">
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>

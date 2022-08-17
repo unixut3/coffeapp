@@ -15,7 +15,6 @@ import {
   var beenCnt = 1;
   
   window.addEventListener("load", async (e) => {
-    // const querySnapshot = await getTasks();
   
     //처음 로드되면 실행
     onGetTasks((querySnapshot) => {

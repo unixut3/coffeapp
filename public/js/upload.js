@@ -16,12 +16,40 @@ import {
   const storage = getStorage();
 
   const taskForm = document.getElementById("task-form");
-  const tasksContainer = document.getElementById("tasks-container");
+  const beenList = document.getElementById("tr-beenList");
 
   let editStatus = false;
   let id = "";
-  var beenCnt = 1;
+  let beenCnt = 10;
+  var beenArr = new Array();
+
+  class Been {
+    constructor(beenNm, beenWeight, beenPrice) {
+        this.beenNm = beenNm;
+        this.beenWeight = beenWeight;
+        this.beenPrice = beenPrice;
+    }
+}
   
+  //onload
+  window.addEventListener("load", async (e) => {
+    onStart();
+
+  });
+
+  function onStart() {
+    beenList.innerHTML = "";
+
+      for (let i = 0; i < beenCnt; i++) {
+        beenList.innerHTML += `
+        <tr>      
+        <td><input type="text" name="beenNm" id="beenNm_${i}" placeholder="원두이름"></td>
+        <td><input type="text" name="beenWt" id="beenWt_${i}" placeholder="무게"></td>
+        <td><input type="text" name="beenPrice" id="beenPrice_${i}" placeholder="가격"></td>
+        </tr>
+        `
+      }
+  }
     
   //저장버튼 버튼 이벤트
   const saveBtn = document.getElementById("btn-task-form");
@@ -31,6 +59,27 @@ import {
     const rosteryName = taskForm["task-rosteryName"];
     const location = taskForm["task-location"];
     var imageUrl = "https://blog.kakaocdn.net/dn/mNBeh/btrCEeNBGpX/4SsK6VI0VMlNAkZe83cPa1/img.jpg";
+    var realCnt = 0;
+
+    //원두 카운트
+    for (let i = 0; i < beenCnt; i++) {
+      var beenNm = document.getElementById('beenNm_'+ i).value;
+      var beenWt = document.getElementById('beenWt_' + i).value;
+      var beenPrice = document.getElementById('beenPrice_' + i).value;
+
+      if(beenNm != "" && beenWt != "" && beenPrice != "" ){
+        realCnt++;
+      }
+    }
+
+    for (let i = 0; i < realCnt; i++) {
+      var beenNm = document.getElementById('beenNm_'+ i).value;
+      var beenWt = document.getElementById('beenWt_' + i).value;
+      var beenPrice = document.getElementById('beenPrice_' + i).value;
+
+      beenArr[i] = (new Been(beenNm, beenWt, beenPrice));
+      
+    }
 
     var ret = confirm('저장 하시겠습니까?')
     if (ret){
