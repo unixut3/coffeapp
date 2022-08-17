@@ -164,17 +164,4 @@ import {
     );
   });
 
-  //증감버튼
-  $('#btn-plus').click(function(){
-    beenCnt++;
-    document.getElementById('beenCnt').innerText = beenCnt;
-  });
-
-  $('#btn-minus').click(function(){
-    if(beenCnt != 0){
-      beenCnt--;
-    } else {
-      beenCnt = 0
-    }
-    document.getElementById('beenCnt').innerText = beenCnt;
-  });
+ 
