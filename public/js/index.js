@@ -25,9 +25,9 @@ import {
         for (let i = 0; i < cnt; i++) {
           tableHTML += `
           <tr>
-            <td>${task.beenList[i].name}</td>
-            <td style="text-align: right;">${task.beenList[i].weight}</td>
-            <td style="text-align: right;">${task.beenList[i].price}</td>
+            <td id="beenNm_${i}">${task.beenList[i].name}</td>
+            <td id="beenWt_${i}" style="text-align: right;">${task.beenList[i].weight}</td>
+            <td id="beenPrice_${i}" style="text-align: right;">${task.beenList[i].price}</td>
           </tr>
           `
         }
