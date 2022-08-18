@@ -12,19 +12,60 @@ import {
   let id = "";
   let beenCnt = 10;
   var beenArr = new Array();
-
-  class Been {
-    constructor(beenNm, beenWeight, beenPrice) {
-        this.beenNm = beenNm;
-        this.beenWeight = beenWeight;
-        this.beenPrice = beenPrice;
-    }
-}
   
   //onload
   window.addEventListener("load", async (e) => {
-    onStart();
+    //상태확인
+    if(e.delegateTarget.location.search.split('=')[1] != null){
+      //수정
+      if(e.delegateTarget.location.search.indexOf('?id=') != -1){
+        id = e.delegateTarget.location.search.split('=')[1];
+        editStatus = true; 
+        
+        const doc = await getTask(id);
+        const task = doc.data();
+        var tableHTML = "";
+        
+        taskForm["task-rosteryName"].value = task.rosteryName;
+        taskForm["task-location"].value = task.location;
+        taskForm["task-instaId"].value = task.instaId;
+        taskForm["task-store"].value = task.store;
+        taskForm["task-monthly"].value = task.monthly;
+        taskForm["task-description"].value = task.description;
 
+        var cnt = task.beenList == null ? 0 : task.beenList.length;
+        var cnt2 = beenCnt - cnt;
+
+        for (let i = 0; i < cnt; i++) {
+          tableHTML += `
+          <tr>
+            <td><input type="text" name="beenNm" id="beenNm_${i}" value="${task.beenList[i].name}"></td>
+            <td><input type="text" name="beenWt" id="beenWt_${i}" value="${task.beenList[i].weight}"></td>
+            <td><input type="text" name="beenPrice" id="beenPrice_${i}" value="${task.beenList[i].price}"></td>
+          </tr>
+          `
+        }
+        for (let i = cnt; i < cnt2; i++) {
+          tableHTML += `
+          <tr>
+            <td><input type="text" name="beenNm" id="beenNm_${i}" placeholder="원두이름"></td>
+            <td><input type="text" name="beenWt" id="beenWt_${i}" placeholder="무게"></td>
+            <td><input type="text" name="beenPrice" id="beenPrice_${i}" placeholder="가격"></td>
+          </tr>
+          `
+        }
+        beenList.innerHTML += tableHTML;
+        taskForm["btn-task-form"].innerText = "Update";
+        taskForm["btn-cancel-form"].style = "display";
+
+      } else {
+        onStart();
+      }
+    } else {
+      //신규
+      onStart();
+    }
+  
   });
 
   function onStart() {
@@ -33,9 +74,9 @@ import {
       for (let i = 0; i < beenCnt; i++) {
         beenList.innerHTML += `
         <tr>      
-        <td><input type="text" name="beenNm" id="beenNm_${i}" placeholder="원두이름"></td>
-        <td><input type="text" name="beenWt" id="beenWt_${i}" placeholder="무게"></td>
-        <td><input type="text" name="beenPrice" id="beenPrice_${i}" placeholder="가격"></td>
+          <td><input type="text" name="beenNm" id="beenNm_${i}" placeholder="원두이름"></td>
+          <td><input type="text" name="beenWt" id="beenWt_${i}" placeholder="무게"></td>
+          <td><input type="text" name="beenPrice" id="beenPrice_${i}" placeholder="가격"></td>
         </tr>
         `
       }
@@ -52,15 +93,18 @@ import {
     const store = taskForm["task-store"];
     const monthlyYn = taskForm["task-monthly"];
     const description = taskForm["task-description"];
+    var beenNm = "";
+    var beenWt = "";
+    var beenPrice = "";
 
     var imageUrl = "https://blog.kakaocdn.net/dn/mNBeh/btrCEeNBGpX/4SsK6VI0VMlNAkZe83cPa1/img.jpg";
     var realCnt = 0;
-    
+    debugger
     //원두 카운트
     for (let i = 0; i < beenCnt; i++) {
-      var beenNm = document.getElementById('beenNm_'+ i).value;
-      var beenWt = document.getElementById('beenWt_' + i).value;
-      var beenPrice = document.getElementById('beenPrice_' + i).value;
+      beenNm = document.getElementById('beenNm_'+ i).value;
+      beenWt = document.getElementById('beenWt_' + i).value;
+      beenPrice = document.getElementById('beenPrice_' + i).value;
 
       if(beenNm != "" && beenWt != "" && beenPrice != "" ){
         realCnt++;
@@ -68,14 +112,13 @@ import {
     }
     
     for (let i = 0; i < realCnt; i++) {
-      var beenNm = document.getElementById('beenNm_'+ i).value;
-      var beenWt = document.getElementById('beenWt_' + i).value;
-      var beenPrice = document.getElementById('beenPrice_' + i).value;
+      beenNm = document.getElementById('beenNm_'+ i).value;
+      beenWt = document.getElementById('beenWt_' + i).value;
+      beenPrice = document.getElementById('beenPrice_' + i).value;
 
       beenArr[i] = {"name" : beenNm, "weight" : beenWt, "price" : beenPrice};
     }
-
-
+    debugger
     var ret = confirm('저장 하시겠습니까?')
     if (ret){
       try {
@@ -123,32 +166,9 @@ import {
       alert("선택된  파일이 없습니다.");
       return;
     }
-
-    const storageRef = ref(storage, 'images/' + file.name);
-    const uploadTask = uploadBytesResumable(storageRef, file);
-    
-    // Listen for state changes, errors, and completion of the upload.
-    uploadTask.on('state_changed',
-    (snapshot) => {
-      // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-      const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-      console.log('Upload is ' + progress + '% done');
-      switch (snapshot.state) {
-        case 'paused':
-          console.log('Upload is paused');
-          break;
-        case 'running':
-          console.log('Upload is running');
-          break;
-      }
-    },
-    (error) => {
-      console.log("Error : " + error);
-    },
-    () => {
-      // Upload completed successfully, now we can get the download URL
-      getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-        console.log('File available at', downloadURL);
-      });
+    try {
+      await uploadImage(file);
+    } catch (error) {
+      console.log(error);
     }
   });
