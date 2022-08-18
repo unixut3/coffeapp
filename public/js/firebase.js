@@ -1,5 +1,5 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.9.1/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.9.2/firebase-app.js";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 import {
@@ -9,17 +9,21 @@ import {
   onSnapshot,
   addDoc,
   deleteDoc,
+  setDoc,
   doc,
   getDoc,
   updateDoc,
-} from "https://www.gstatic.com/firebasejs/9.9.1/firebase-firestore.js";
+  query,
+  orderBy 
+} from "https://www.gstatic.com/firebasejs/9.9.2/firebase-firestore.js";
+
 import { 
   getStorage, 
   ref, 
   uploadBytesResumable, 
   uploadBytes, 
   getDownloadURL, 
-} from "https://www.gstatic.com/firebasejs/9.9.1/firebase-storage.js";
+} from "https://www.gstatic.com/firebasejs/9.9.2/firebase-storage.js";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -43,8 +47,9 @@ export const storage = getStorage();
  * @param {string} location the location of the Task
  * @param {string} imageUrl the imageUrl of the Task
  */
-export const saveTask = (rosteryName, location, imageUrl) =>
-  addDoc(collection(db, "Rostery"), { rosteryName, location, imageUrl });
+export const saveTask = (rosteryName, location, imageUrl, beenList, monthlyYn, description, instaId, store) =>  
+  setDoc(doc(db, "Rostery", rosteryName), { rosteryName, location, imageUrl ,beenList, monthlyYn, description, instaId, store});
+
 
 export const onGetTasks = (callback) =>
   onSnapshot(collection(db, "Rostery"), callback);
@@ -63,36 +68,22 @@ export const updateTask = (id, newFields) =>
 export const getTasks = () => getDocs(collection(db, "Rostery"));
 
 export const uploadImage = (file) => {
-  debugger
+  
   const storageRef = ref(storage, 'images/' + file.name);
-  // 'file' comes from the Blob or File API
-  uploadBytes(storageRef, file).then((snapshot) => {
-    console.log('Uploaded a blob or file!');
-  });
-
   const uploadTask = uploadBytesResumable(storageRef, file);
   
   // Listen for state changes, errors, and completion of the upload.
-  uploadTask.on('state_changed',
-  (snapshot) => {
+  uploadTask.on('state_changed', (snapshot) => {
     // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
     const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
     console.log('Upload is ' + progress + '% done');
-    switch (snapshot.state) {
-      case 'paused':
-        console.log('Upload is paused');
-        break;
-      case 'running':
-        console.log('Upload is running');
-        break;
-    }
   },
   (error) => {
     console.log("Error : " + error);
   },
-  () => {
+  () => {debugger
     // Upload completed successfully, now we can get the download URL
-    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+    getDownloadURL(storageRef).then((downloadURL) => {
       console.log('File available at', downloadURL);
     });
   }

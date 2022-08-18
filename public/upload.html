@@ -43,9 +43,9 @@
             <div class="card-body">
               <h1 class="h4">로스터리 추가</h1>
               <form id="task-form">
-                <label for="rosteryName">rosteryName:</label>
+                <label for="rosteryName">로스터리명:</label>
                 <input type="text" id="task-rosteryName" class="form-control mb-3" class="My First Title" placeholder="rosteryName" autofocus/>
-                <label for="location">location:</label>
+                <label for="location">위치:</label>
                 <select  class="form-control mb-3" name="location" id="task-location">
                   <option value="seoul">seoul</option>
                   <option value="kyunggi">kyunggi</option>
@@ -53,11 +53,16 @@
                   <option value="busan">busan</option>
                   <option value="incheon">incheon</option>
                 </select>
-                <label for="instaId">instaId:</label>
+                <label for="instaId">인스타아이디:</label>
                 <input id="task-instaId" class="form-control mb-3" placeholder="instaId"></input>
-                <label for="store">store:</label>
+                <label for="store">스토어주소:</label>
                 <input id="task-store" class="form-control mb-3" placeholder="store"></input>
-                <label for="description">description:</label>
+                <label for="store">이달의원두 여부</label>
+                <select  class="form-control mb-3" name="monthly" id="task-monthly">
+                  <option value="Y">Y</option>
+                  <option value="N">N</option>
+                </select>
+                <label for="description">상세설명:</label>
                 <textarea row = 5 id="task-description" class="form-control mb-3" placeholder="description"></textarea>
                 <input type="file" class="form-control mt-2" style="margin-bottom: 10px;" id="image">
                 <button class="btn btn-primary" id="btn-task-form">Save</button>

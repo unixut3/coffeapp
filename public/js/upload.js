@@ -47,9 +47,14 @@ import {
   
     const rosteryName = taskForm["task-rosteryName"];
     const location = taskForm["task-location"];
+    const instaId = taskForm["task-instaId"];
+    const store = taskForm["task-store"];
+    const monthlyYn = taskForm["task-monthly"];
+    const description = taskForm["task-description"];
+
     var imageUrl = "https://blog.kakaocdn.net/dn/mNBeh/btrCEeNBGpX/4SsK6VI0VMlNAkZe83cPa1/img.jpg";
     var realCnt = 0;
-
+    
     //원두 카운트
     for (let i = 0; i < beenCnt; i++) {
       var beenNm = document.getElementById('beenNm_'+ i).value;
@@ -66,20 +71,25 @@ import {
       var beenWt = document.getElementById('beenWt_' + i).value;
       var beenPrice = document.getElementById('beenPrice_' + i).value;
 
-      beenArr[i] = (new Been(beenNm, beenWt, beenPrice));
-      
+      beenArr[i] = {"name" : beenNm, "weight" : beenWt, "price" : beenPrice};
     }
+
 
     var ret = confirm('저장 하시겠습니까?')
     if (ret){
       try {
         if (!editStatus) {
-          await saveTask(rosteryName.value, location.value, imageUrl);
+          await saveTask(rosteryName.value, location.value, imageUrl, beenArr, monthlyYn.value, description.value, instaId.value, store.value);
         } else {
           await updateTask(id, {
             rosteryName: rosteryName.value,
             location: location.value,
-            imageUrl: imageUrl
+            imageUrl: imageUrl,
+            beenList: beenArr,
+            monthlyYn : monthlyYn.value,
+            description : description.value,
+            instaId : instaId.value,
+            store : store.value
           });
     
           editStatus = false;
@@ -112,6 +122,9 @@ import {
       alert("선택된  파일이 없습니다.");
       return;
     }
-
-    uploadImage(file)
+    try {
+      await uploadImage(file);
+    } catch (error) {
+      console.log(error);
+    }
   });

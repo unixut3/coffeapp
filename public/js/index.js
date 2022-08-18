@@ -44,7 +44,6 @@ import {
           if (ret){
             try {
               await deleteTask(dataset.id);
-              alert('삭제완료');
             } catch (error) {
               console.log(error);
             }
