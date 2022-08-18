@@ -13,15 +13,12 @@ import {
   doc,
   getDoc,
   updateDoc,
-  query,
-  orderBy 
 } from "https://www.gstatic.com/firebasejs/9.9.2/firebase-firestore.js";
 
 import { 
   getStorage, 
   ref, 
   uploadBytesResumable, 
-  uploadBytes, 
   getDownloadURL, 
 } from "https://www.gstatic.com/firebasejs/9.9.2/firebase-storage.js";
 

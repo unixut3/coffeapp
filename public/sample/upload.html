@@ -52,7 +52,7 @@
     var storageRef = storage.ref();
     var imagePath = storageRef.child('image/' + file.name);
     var imageUpload = imagePath.put(file);
-  debugger
+  
     imageUpload.on('state_changed',
       //변화시 동작하는 함수
       null,

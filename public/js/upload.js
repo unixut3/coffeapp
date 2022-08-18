@@ -45,7 +45,7 @@ import {
           </tr>
           `
         }
-        for (let i = cnt; i < cnt2; i++) {
+        for (let i = cnt; i < beenCnt; i++) {
           tableHTML += `
           <tr>
             <td><input type="text" name="beenNm" id="beenNm_${i}" placeholder="원두이름"></td>
@@ -118,7 +118,7 @@ import {
 
       beenArr[i] = {"name" : beenNm, "weight" : beenWt, "price" : beenPrice};
     }
-    debugger
+    
     var ret = confirm('저장 하시겠습니까?')
     if (ret){
       try {
