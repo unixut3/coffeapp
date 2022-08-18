@@ -97,15 +97,9 @@ import {
       btnsEdit.forEach((btn) => {
         btn.addEventListener("click", async (e) => {
           try {
-            const doc = await getTask(e.target.dataset.id);
-            const task = doc.data();
-            taskForm["task-rosteryName"].value = task.rosteryName;
-            taskForm["task-location"].value = task.location;
-            
-            editStatus = true;
-            id = doc.id;
-            taskForm["btn-task-form"].innerText = "Update";
-            taskForm["btn-cancel-form"].style = "display";
+            id = e.target.dataset.id;
+  
+            window.location.href = "/public/upload.html?id=" + id;
           } catch (error) {
             console.log(error);
           }

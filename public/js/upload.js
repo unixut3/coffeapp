@@ -2,6 +2,7 @@ import {
   saveTask, 
   updateTask, 
   uploadImage,
+  getTask
 } from "./firebase.js";
 
   const taskForm = document.getElementById("task-form");
@@ -11,19 +12,50 @@ import {
   let id = "";
   let beenCnt = 10;
   var beenArr = new Array();
-
-  class Been {
-    constructor(beenNm, beenWeight, beenPrice) {
-        this.beenNm = beenNm;
-        this.beenWeight = beenWeight;
-        this.beenPrice = beenPrice;
-    }
-}
   
   //onload
   window.addEventListener("load", async (e) => {
-    onStart();
+    //상태확인
+    if(e.delegateTarget.location.search.split('=')[1] != null){
+      //수정
+      if(e.delegateTarget.location.search.indexOf('?id=') != -1){
+        id = e.delegateTarget.location.search.split('=')[1];
+        editStatus = true; 
+        
+        const doc = await getTask(id);
+        const task = doc.data();
+        var tableHTML = "";
+        
+        taskForm["task-rosteryName"].value = task.rosteryName;
+        taskForm["task-location"].value = task.location;
+        taskForm["task-instaId"].value = task.instaId;
+        taskForm["task-store"].value = task.store;
+        taskForm["task-monthly"].value = task.monthly;
+        taskForm["task-description"].value = task.description;
 
+        var cnt = task.beenList == null ? 0 : task.beenList.length;
+
+        for (let i = 0; i < cnt; i++) {
+          tableHTML += `
+          <tr>
+            <td>${task.beenList[i].name}</td>
+            <td style="text-align: right;">${task.beenList[i].weight}</td>
+            <td style="text-align: right;">${task.beenList[i].price}</td>
+          </tr>
+          `
+        }
+        beenList.innerHTML += tableHTML;
+        taskForm["btn-task-form"].innerText = "Update";
+        taskForm["btn-cancel-form"].style = "display";
+
+      } else {
+        onStart();
+      }
+    } else {
+      //신규
+      onStart();
+    }
+  
   });
 
   function onStart() {
@@ -65,7 +97,7 @@ import {
         realCnt++;
       }
     }
-
+    
     for (let i = 0; i < realCnt; i++) {
       var beenNm = document.getElementById('beenNm_'+ i).value;
       var beenWt = document.getElementById('beenWt_' + i).value;
