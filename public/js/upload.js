@@ -1,15 +1,9 @@
 import {
   saveTask, 
   updateTask, 
+  uploadImage,
+  getTask
 } from "./firebase.js";
-import { 
-    getStorage, 
-    ref, 
-    uploadBytesResumable, 
-    getDownloadURL, 
-  } from "https://www.gstatic.com/firebasejs/9.9.1/firebase-storage.js";
-  
-  const storage = getStorage();
 
   const taskForm = document.getElementById("task-form");
   const beenList = document.getElementById("tr-beenList");
@@ -54,9 +48,14 @@ import {
   
     const rosteryName = taskForm["task-rosteryName"];
     const location = taskForm["task-location"];
+    const instaId = taskForm["task-instaId"];
+    const store = taskForm["task-store"];
+    const monthlyYn = taskForm["task-monthly"];
+    const description = taskForm["task-description"];
+
     var imageUrl = "https://blog.kakaocdn.net/dn/mNBeh/btrCEeNBGpX/4SsK6VI0VMlNAkZe83cPa1/img.jpg";
     var realCnt = 0;
-
+    
     //원두 카운트
     for (let i = 0; i < beenCnt; i++) {
       var beenNm = document.getElementById('beenNm_'+ i).value;
@@ -67,26 +66,31 @@ import {
         realCnt++;
       }
     }
-
+    
     for (let i = 0; i < realCnt; i++) {
       var beenNm = document.getElementById('beenNm_'+ i).value;
       var beenWt = document.getElementById('beenWt_' + i).value;
       var beenPrice = document.getElementById('beenPrice_' + i).value;
 
-      beenArr[i] = (new Been(beenNm, beenWt, beenPrice));
-      
+      beenArr[i] = {"name" : beenNm, "weight" : beenWt, "price" : beenPrice};
     }
+
 
     var ret = confirm('저장 하시겠습니까?')
     if (ret){
       try {
         if (!editStatus) {
-          await saveTask(rosteryName.value, location.value, imageUrl);
+          await saveTask(rosteryName.value, location.value, imageUrl, beenArr, monthlyYn.value, description.value, instaId.value, store.value);
         } else {
           await updateTask(id, {
             rosteryName: rosteryName.value,
             location: location.value,
-            imageUrl: imageUrl
+            imageUrl: imageUrl,
+            beenList: beenArr,
+            monthlyYn : monthlyYn.value,
+            description : description.value,
+            instaId : instaId.value,
+            store : store.value
           });
     
           editStatus = false;
@@ -121,7 +125,7 @@ import {
     }
 
     const storageRef = ref(storage, 'images/' + file.name);
-    const uploadTask = await uploadBytesResumable(storageRef, file);
+    const uploadTask = uploadBytesResumable(storageRef, file);
     
     // Listen for state changes, errors, and completion of the upload.
     uploadTask.on('state_changed',
@@ -135,7 +139,6 @@ import {
           break;
         case 'running':
           console.log('Upload is running');
-          debugger
           break;
       }
     },
@@ -148,11 +151,4 @@ import {
         console.log('File available at', downloadURL);
       });
     }
-    );
   });
-
-  $('#btn-Upload').click(function(){
-    
-  });
-
- 

@@ -39,53 +39,67 @@
  };
    firebase.initializeApp(firebaseConfig);
 </script>
-  <script>
-    //upload
-    const db = firebase.firestore();
-    const storage = firebase.storage();
+<script>
+  //upload
+  const db = firebase.firestore();
+  const storage = firebase.storage();
 
-    //이미지 업로드시 먼저 업로드하고, url 을 디비에 저장
-    //문서명 지정가능
-    // db.collection('Rostery').doc('id3').set({})  
-    $('#send').click(function(){
-      var file = document.querySelector('#image').files[0];   
-      var storageRef = storage.ref();
-      var imagePath = storageRef.child('image/' + file.name);
-      var imageUpload = imagePath.put(file);
-    debugger
-      imageUpload.on('state_changed',
-        //변화시 동작하는 함수
-        null,
-        //에러시 동작하는 함수
-        (error) => {
-            console.log('실패사유는', error);
-        },
-        //성공시 동작하는 함수
-        () => {debugger
-            imageUpload.snapshot.ref.getDownloadURL().then((url) => {
-                console.log('업로드된 경로는', url);
+  //이미지 업로드시 먼저 업로드하고, url 을 디비에 저장
+  //문서명 지정가능
+  // db.collection('Rostery').doc('id3').set({})  
+  $('#send').click(function(){
+    var file = document.querySelector('#image').files[0];   
+    var storageRef = storage.ref();
+    var imagePath = storageRef.child('image/' + file.name);
+    var imageUpload = imagePath.put(file);
+  debugger
+    imageUpload.on('state_changed',
+      //변화시 동작하는 함수
+      null,
+      //에러시 동작하는 함수
+      (error) => {
+          console.log('실패사유는', error);
+      },
+      //성공시 동작하는 함수
+      () => {
+          imageUpload.snapshot.ref.getDownloadURL().then((url) => {
+              console.log('업로드된 경로는', url);
+              var data = {
+                  rosteryName : $('#rosteryName').val(),
+                  location : $('#location').val(),
+                  imageUrl : url,
+                  date : new Date(),
+              };
+              
+              db.collection('Rostery').add(data)
+                .then((result)=>{
+                    console.log(result);
+                }).catch((err)=>{
+                    console.log(err);
                 });
-            }
-        ) 
-    })
 
-    $('#save').click(function(){
-        var data = {
-            rosteryName : $('#rosteryName').val(),
-            location : $('#location').val(),
-            imageUrl : "https://newsimg.sedaily.com/2020/02/04/1YYSJT547F_1.jpg",
-            date : new Date(),
-        };
-        //문서명 자동
-        // db.collection('Rostery').doc('id3').set(data)  
-        db.collection('Rostery').add(data)
-            .then((result)=>{
-                console.log(result);
-            }).catch((err)=>{
-                console.log(err);
-            }) 
-    })
-    
-  </script>
+              });
+          }
+      ) 
+  })
+
+  $('#save').click(function(){
+      var data = {
+          rosteryName : $('#rosteryName').val(),
+          location : $('#location').val(),
+          imageUrl : "https://newsimg.sedaily.com/2020/02/04/1YYSJT547F_1.jpg",
+          date : new Date(),
+      };
+      //문서명 자동
+      // db.collection('Rostery').doc('id3').set(data)  
+      db.collection('Rostery').add(data)
+          .then((result)=>{
+              console.log(result);
+          }).catch((err)=>{
+              console.log(err);
+          }) 
+  })
+  
+</script>
 </body>
 </html>
