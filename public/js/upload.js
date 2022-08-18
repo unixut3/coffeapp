@@ -118,12 +118,24 @@ import {
 
       beenArr[i] = {"name" : beenNm, "weight" : beenWt, "price" : beenPrice};
     }
+    const file = document.querySelector('#image').files[0];
+
+    if(file == null){
+      alert("선택된  파일이 없습니다.");
+      return;
+    }
     
     var ret = confirm('저장 하시겠습니까?')
     if (ret){
       try {
         if (!editStatus) {
-          await saveTask(rosteryName.value, location.value, imageUrl, beenArr, monthlyYn.value, description.value, instaId.value, store.value);
+          
+          try {
+            await uploadImage(file, rosteryName.value, location.value, imageUrl, beenArr, monthlyYn.value, description.value, instaId.value, store.value);
+          } catch (error) {
+            console.log(error);
+          }
+          // await saveTask(rosteryName.value, location.value, imageUrl, beenArr, monthlyYn.value, description.value, instaId.value, store.value);
         } else {
           await updateTask(id, {
             rosteryName: rosteryName.value,

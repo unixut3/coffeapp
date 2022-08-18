@@ -64,7 +64,7 @@ export const updateTask = (id, newFields) =>
 
 export const getTasks = () => getDocs(collection(db, "Rostery"));
 
-export const uploadImage = (file) => {
+export const uploadImage = (file, rosteryName, location, beenList, monthlyYn, description, instaId, store) => {
   
   const storageRef = ref(storage, 'images/' + file.name);
   const uploadTask = uploadBytesResumable(storageRef, file);
@@ -80,8 +80,9 @@ export const uploadImage = (file) => {
   },
   () => {
     // Upload completed successfully, now we can get the download URL
-    getDownloadURL(storageRef).then((downloadURL) => {
-      console.log('File available at', downloadURL);
+    getDownloadURL(storageRef).then((imageUrl) => {
+      console.log('File available at', imageUrl);
+      setDoc(doc(db, "Rostery", rosteryName), { rosteryName, location, imageUrl ,beenList, monthlyYn, description, instaId, store});
     });
   }
   );
