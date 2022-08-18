@@ -1,10 +1,7 @@
 import {
     onGetTasks, 
-    saveTask, 
     deleteTask, 
     getTask, 
-    updateTask, 
-    getTasks,
   } from "./firebase.js";
   
   const taskForm = document.getElementById("task-form");
@@ -12,7 +9,6 @@ import {
 
   let editStatus = false;
   let id = "";
-  var beenCnt = 1;
   
   window.addEventListener("load", async (e) => {
   
