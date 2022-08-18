@@ -121,7 +121,7 @@ import {
     }
 
     const storageRef = ref(storage, 'images/' + file.name);
-    const uploadTask = uploadBytesResumable(storageRef, file);
+    const uploadTask = await uploadBytesResumable(storageRef, file);
     
     // Listen for state changes, errors, and completion of the upload.
     uploadTask.on('state_changed',
@@ -135,6 +135,7 @@ import {
           break;
         case 'running':
           console.log('Upload is running');
+          debugger
           break;
       }
     },
