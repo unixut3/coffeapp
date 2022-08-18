@@ -3,12 +3,11 @@
     padding: 10px;
 }
 .thumbnail {
-   max-width: 200px; 
+   max-width: 250px; 
    width: 100%;
    border-radius: 10px;
    background-size: cover;
    background-position: center;
-   margin-bottom: 10px;
 }
 .product .price {
     font-size: 16px;
@@ -22,10 +21,10 @@
     color: gray;
     font-size: 13px;
 }
-table {
+/* table {
     width: 100%;
     border: 1px solid #444444;
   }
 th, td {
     border: 1px solid #444444;
-  }
+  } */

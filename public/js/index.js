@@ -26,15 +26,15 @@ import {
           tableHTML += `
           <tr>
             <td id="beenNm_${i}">${task.beenList[i].name}</td>
-            <td id="beenWt_${i}" style="text-align: right;">${task.beenList[i].weight}</td>
-            <td id="beenPrice_${i}" style="text-align: right;">${task.beenList[i].price}</td>
+            <td id="beenWt_${i}" style="text-align: right;">${task.beenList[i].weight.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}</td>
+            <td id="beenPrice_${i}" style="text-align: right;">${task.beenList[i].price.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}</td>
           </tr>
           `
         }
   
         tasksContainer.innerHTML += `
           <div class="card card-body mt-2 border-primary">
-          <table>
+          <table class="table table-bordered">
             <tr style="text-align: left; vertical-align: top;">
               <td width="200px;">
                 <image src="${task.imageUrl}" class="thumbnail"></image>
@@ -50,7 +50,7 @@ import {
               <td width="300px;">
                 <h3 class="h5" style="text-align: center;">원두목록</h3>
                 <div>
-                  <table>
+                  <table class="table table-hover">
                     <thead>
                       <tr>
                         <th style = "width:200px; text-align: center;">원두명</th>
