@@ -17,6 +17,7 @@ import {
   getStorage, 
   ref, 
   uploadBytesResumable, 
+  uploadBytes, 
   getDownloadURL, 
 } from "https://www.gstatic.com/firebasejs/9.9.1/firebase-storage.js";
 
@@ -64,6 +65,11 @@ export const getTasks = () => getDocs(collection(db, "Rostery"));
 export const uploadImage = (file) => {
   debugger
   const storageRef = ref(storage, 'images/' + file.name);
+  // 'file' comes from the Blob or File API
+  uploadBytes(storageRef, file).then((snapshot) => {
+    console.log('Uploaded a blob or file!');
+  });
+
   const uploadTask = uploadBytesResumable(storageRef, file);
   
   // Listen for state changes, errors, and completion of the upload.
