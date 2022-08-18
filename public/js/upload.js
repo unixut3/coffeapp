@@ -99,7 +99,7 @@ import {
 
     var imageUrl = "https://blog.kakaocdn.net/dn/mNBeh/btrCEeNBGpX/4SsK6VI0VMlNAkZe83cPa1/img.jpg";
     var realCnt = 0;
-    debugger
+    
     //원두 카운트
     for (let i = 0; i < beenCnt; i++) {
       beenNm = document.getElementById('beenNm_'+ i).value;

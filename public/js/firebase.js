@@ -78,7 +78,7 @@ export const uploadImage = (file) => {
   (error) => {
     console.log("Error : " + error);
   },
-  () => {debugger
+  () => {
     // Upload completed successfully, now we can get the download URL
     getDownloadURL(storageRef).then((downloadURL) => {
       console.log('File available at', downloadURL);
