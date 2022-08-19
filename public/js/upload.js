@@ -24,16 +24,17 @@ import {
         
         const doc = await getTask(id);
         const task = doc.data();
-        var cnt = task.beenList == null ? 0 : task.beenList.length;
-        var cnt2 = beenCnt - cnt;
-        var tableHTML = "";
-        
+        console.log("task : " + task);
+
         taskForm["task-rosteryName"].value = task.rosteryName;
         taskForm["task-location"].value = task.location;
         taskForm["task-instaId"].value = task.instaId;
         taskForm["task-store"].value = task.store;
         taskForm["task-monthly"].value = task.monthly;
         taskForm["task-description"].value = task.description;
+
+        var cnt = task.beenList == null ? 0 : task.beenList.length;
+        var tableHTML = "";
 
         for (let i = 0; i < cnt; i++) {
           tableHTML += `

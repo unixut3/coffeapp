@@ -45,7 +45,8 @@ export const storage = getStorage();
  * @param {string} imageUrl the imageUrl of the Task
  */
 export const saveTask = (rosteryName, location, imageUrl, beenList, monthlyYn, description, instaId, store) =>  
-  setDoc(doc(db, "Rostery", rosteryName), { rosteryName, location, imageUrl ,beenList, monthlyYn, description, instaId, store});
+  // setDoc(doc(db, "Rostery", rosteryName), { rosteryName, location, imageUrl ,beenList, monthlyYn, description, instaId, store});
+  addDoc(collection(db, "Rostery"), { rosteryName, location, imageUrl ,beenList, monthlyYn, description, instaId, store});
 
 
 export const onGetTasks = (callback) =>
@@ -82,7 +83,8 @@ export const uploadImage = (file, rosteryName, location, beenList, monthlyYn, de
     // Upload completed successfully, now we can get the download URL
     getDownloadURL(storageRef).then((imageUrl) => {
       console.log('File available at', imageUrl);
-      setDoc(doc(db, "Rostery", rosteryName), { rosteryName, location, imageUrl ,beenList, monthlyYn, description, instaId, store});
+      // setDoc(doc(db, "Rostery", rosteryName), { rosteryName, location, imageUrl ,beenList, monthlyYn, description, instaId, store});
+      addDoc(collection(db, "Rostery"), { rosteryName, location, imageUrl ,beenList, monthlyYn, description, instaId, store});
     });
   }
   );
