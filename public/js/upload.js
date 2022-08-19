@@ -24,6 +24,8 @@ import {
         
         const doc = await getTask(id);
         const task = doc.data();
+        var cnt = task.beenList == null ? 0 : task.beenList.length;
+        var cnt2 = beenCnt - cnt;
         var tableHTML = "";
         
         taskForm["task-rosteryName"].value = task.rosteryName;
@@ -33,15 +35,12 @@ import {
         taskForm["task-monthly"].value = task.monthly;
         taskForm["task-description"].value = task.description;
 
-        var cnt = task.beenList == null ? 0 : task.beenList.length;
-        var cnt2 = beenCnt - cnt;
-
         for (let i = 0; i < cnt; i++) {
           tableHTML += `
           <tr>
             <td><input type="text" name="beenNm" id="beenNm_${i}" value="${task.beenList[i].name}"></td>
-            <td><input type="text" name="beenWt" id="beenWt_${i}" value="${task.beenList[i].weight}"></td>
-            <td><input type="text" name="beenPrice" id="beenPrice_${i}" value="${task.beenList[i].price}"></td>
+            <td><input type="text" style ="text-align:right;" name="beenWt" id="beenWt_${i}" value="${task.beenList[i].weight}"></td>
+            <td><input type="text" style ="text-align:right;" name="beenPrice" id="beenPrice_${i}" value="${task.beenList[i].price}"></td>
           </tr>
           `
         }
@@ -49,15 +48,13 @@ import {
           tableHTML += `
           <tr>
             <td><input type="text" name="beenNm" id="beenNm_${i}" placeholder="원두이름"></td>
-            <td><input type="text" name="beenWt" id="beenWt_${i}" placeholder="무게"></td>
-            <td><input type="text" name="beenPrice" id="beenPrice_${i}" placeholder="가격"></td>
+            <td><input type="text" name="beenWt" style ="text-align:right;" id="beenWt_${i}" placeholder="무게"></td>
+            <td><input type="text" name="beenPrice" style ="text-align:right;" id="beenPrice_${i}" placeholder="가격"></td>
           </tr>
           `
         }
         beenList.innerHTML += tableHTML;
-        taskForm["btn-task-form"].innerText = "Update";
-        taskForm["btn-cancel-form"].style = "display";
-
+        document.getElementById("btn-task-form").innerText = "Update";
       } else {
         onStart();
       }
@@ -65,7 +62,6 @@ import {
       //신규
       onStart();
     }
-  
   });
 
   function onStart() {
@@ -75,8 +71,8 @@ import {
         beenList.innerHTML += `
         <tr>      
           <td><input type="text" name="beenNm" id="beenNm_${i}" placeholder="원두이름"></td>
-          <td><input type="text" name="beenWt" id="beenWt_${i}" placeholder="무게"></td>
-          <td><input type="text" name="beenPrice" id="beenPrice_${i}" placeholder="가격"></td>
+          <td><input type="text" name="beenWt" style ="text-align:right;" id="beenWt_${i}" placeholder="무게"></td>
+          <td><input type="text" name="beenPrice" style ="text-align:right;" id="beenPrice_${i}" placeholder="가격"></td>
         </tr>
         `
       }
@@ -93,11 +89,10 @@ import {
     const store = taskForm["task-store"];
     const monthlyYn = taskForm["task-monthly"];
     const description = taskForm["task-description"];
+    const imageUrl = "";
     var beenNm = "";
     var beenWt = "";
     var beenPrice = "";
-
-    var imageUrl = "https://blog.kakaocdn.net/dn/mNBeh/btrCEeNBGpX/4SsK6VI0VMlNAkZe83cPa1/img.jpg";
     var realCnt = 0;
     
     //원두 카운트
@@ -118,18 +113,21 @@ import {
 
       beenArr[i] = {"name" : beenNm, "weight" : beenWt, "price" : beenPrice};
     }
-    const file = document.querySelector('#image').files[0];
 
-    if(file == null){
-      alert("선택된  파일이 없습니다.");
-      return;
+    //신규작성일때만
+    if(!editStatus){
+      const file = document.querySelector('#image').files[0];
+
+      if(file == null){
+        alert("선택된  파일이 없습니다.");
+        return;
+      }
     }
     
     var ret = confirm('저장 하시겠습니까?')
     if (ret){
       try {
         if (!editStatus) {
-          
           try {
             await uploadImage(file, rosteryName.value, location.value, imageUrl, beenArr, monthlyYn.value, description.value, instaId.value, store.value);
           } catch (error) {
@@ -140,7 +138,6 @@ import {
           await updateTask(id, {
             rosteryName: rosteryName.value,
             location: location.value,
-            imageUrl: imageUrl,
             beenList: beenArr,
             monthlyYn : monthlyYn.value,
             description : description.value,
@@ -150,8 +147,7 @@ import {
     
           editStatus = false;
           id = "";
-          taskForm["btn-task-form"].innerText = "Save";
-          taskForm["btn-cancel-form"].style = "display:none";
+          document.getElementById("btn-task-form").innerText = "Save";
         }
     
         taskForm.reset();
@@ -166,21 +162,22 @@ import {
   //취소버튼 클릭
   $('#btn-cancel-form').click(function(){
     location.reload();
+    window.location.href = "/public/index.html";
   });
 
   //업로드 버튼 클릭
-  const uploadBtn = document.getElementById("btn-upload");
-  uploadBtn.addEventListener("click", async (e) => {
+  // const uploadBtn = document.getElementById("btn-upload");
+  // uploadBtn.addEventListener("click", async (e) => {
 
-    const file = document.querySelector('#image').files[0];
+  //   const file = document.querySelector('#image').files[0];
 
-    if(file == null){
-      alert("선택된  파일이 없습니다.");
-      return;
-    }
-    try {
-      await uploadImage(file);
-    } catch (error) {
-      console.log(error);
-    }
-  });
+  //   if(file == null){
+  //     alert("선택된  파일이 없습니다.");
+  //     return;
+  //   }
+  //   try {
+  //     await uploadImage(file);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // });
