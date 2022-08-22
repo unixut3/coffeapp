@@ -91,6 +91,7 @@ import {
     const monthlyYn = taskForm["task-monthly"];
     const description = taskForm["task-description"];
     const imageUrl = "";
+    const imageArr = Array();
     var beenNm = "";
     var beenWt = "";
     var beenPrice = "";
@@ -117,12 +118,11 @@ import {
 
     //신규작성일때만
     if(!editStatus){
-      const file = document.querySelector('#image').files[0];
-
-      if(file == null){
-        alert("선택된  파일이 없습니다.");
-        return;
-      }
+      const file1 = document.querySelector('#image1').files[0];
+      const file2 = document.querySelector('#image2').files[0];
+      
+      imageArr[0] = file1;
+      imageArr[1] = file2;
     }
     
     var ret = confirm('저장 하시겠습니까?')
@@ -130,7 +130,7 @@ import {
       try {
         if (!editStatus) {
           try {
-            await uploadImage(file, rosteryName.value, location.value, imageUrl, beenArr, monthlyYn.value, description.value, instaId.value, store.value);
+            await uploadImage(imageArr, rosteryName.value, location.value, imageUrl, beenArr, monthlyYn.value, description.value, instaId.value, store.value);
           } catch (error) {
             console.log(error);
           }

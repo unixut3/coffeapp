@@ -65,27 +65,35 @@ export const updateTask = (id, newFields) =>
 
 export const getTasks = () => getDocs(collection(db, "Rostery"));
 
-export const uploadImage = (file, rosteryName, location, beenList, monthlyYn, description, instaId, store) => {
-  
-  const storageRef = ref(storage, 'images/' + file.name);
-  const uploadTask = uploadBytesResumable(storageRef, file);
-  
-  // Listen for state changes, errors, and completion of the upload.
-  uploadTask.on('state_changed', (snapshot) => {
-    // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-    console.log('Upload is ' + progress + '% done');
-  },
-  (error) => {
-    console.log("Error : " + error);
-  },
-  () => {
-    // Upload completed successfully, now we can get the download URL
-    getDownloadURL(storageRef).then((imageUrl) => {
-      console.log('File available at', imageUrl);
-      // setDoc(doc(db, "Rostery", rosteryName), { rosteryName, location, imageUrl ,beenList, monthlyYn, description, instaId, store});
-      addDoc(collection(db, "Rostery"), { rosteryName, location, imageUrl ,beenList, monthlyYn, description, instaId, store});
-    });
+export const uploadImage = (imageArr, rosteryName, location, beenList, monthlyYn, description, instaId, store) => {
+  var imageUrlArr = Array();
+
+  for (let i = 0; i < 2; i++) {
+    var file = imageArr[i];
+
+    const storageRef = ref(storage, 'images/' + file.name);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+    
+    // Listen for state changes, errors, and completion of the upload.
+    uploadTask.on('state_changed', (snapshot) => {
+      // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+      const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+      console.log('Upload is ' + progress + '% done');
+    },
+    (error) => {
+      console.log("Error : " + error);
+    },
+    () => {
+      // Upload completed successfully, now we can get the download URL
+      getDownloadURL(storageRef).then((imageUrl) => {
+        console.log('File available at', imageUrl);
+        imageUrlArr[i] = imageUrl
+        // setDoc(doc(db, "Rostery", rosteryName), { rosteryName, location, imageUrl ,beenList, monthlyYn, description, instaId, store});
+        // addDoc(collection(db, "Rostery"), { rosteryName, location, imageUrl ,beenList, monthlyYn, description, instaId, store});
+        });
+      }
+    );
+    
   }
-  );
+  
 }
