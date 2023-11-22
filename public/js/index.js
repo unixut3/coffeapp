@@ -56,6 +56,7 @@ import {
                         <th style = "width:200px; text-align: center;">원두명</th>
                         <th style = "width:100px; text-align: center;">그람</th>
                         <th style = "width:100px; text-align: center;">가격</th>
+                        <th style = "width:100px; text-align: center;">이렇게 해서 저장이 될까?? 안될까?</th>
                       </tr>
                     </thead>
                     <tbody>
