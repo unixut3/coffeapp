@@ -1,0 +1,430 @@
+<!-- pos__detail-wrapper S -->
+<div class="pos__detail-wrapper pos-list-full">
+    <!-- pos__detail-cont S -->
+    <div class="pos__detail-cont">
+        <!-- pos__title-sub S -->
+        <dl class="pos__title-sub">
+            <dt>
+                <h4></h4>
+            </dt>
+            <!-- pos__btn-box S -->
+            <dd class="pos__btn-box">
+                <button type="button" pec:type-ex="main" pec:code="add" pec:text="추가" class="btn__small color-blue2" th:id="${prid} + 'btnAdd'"><span th:text="#{add}"></span></button>
+                <button type="button" pec:type-ex="main" pec:code="remove" pec:text="삭제" class="btn__small color-blue2" th:id="${prid} + 'btnDel'"><span th:text="#{del}"></span></button>
+                <button type="button" pec:type-ex="main" pec:code="save" pec:text="저장" class="btn__small color-blue2" th:id="${prid} + 'btnSave'"><span th:text="#{save}"></span></button>
+                <button type="button" class="btn__small color-blue2" th:id="${prid} + 'btnSelect'"><span th:text="#{select}"></span></button>
+            </dd>
+            <!--// pos__btn-box E -->
+        </dl>
+        <!--// pos__title-sub E -->
+
+        <!-- pos__table-layout S -->
+        <div class="pos__table-top">
+		</div>
+		<!-- pos-list-full__table S -->
+		<div class="pos-list-full__table">
+		    <!-- pos__table-box--new S -->
+		    <div class="pos__table-box--new" style="height: 100%;">
+		        <div th:id="${prid}+'grid1Div'" style="width:100%;"></div>
+		    </div>
+		    <!--// pos__table-box--new E -->
+		</div>
+		<!-- pos-list-full__table E -->
+	</div>
+</div>
+
+<th:block layout:fragment="script">
+</th:block>
+
+<th:block layout:fragment="script-content">
+    <script th:inline="javascript" type="text/javascript">
+
+/********************************************************************************************
+*************************** 전역변수 ************************
+*********************************************************************************************/
+	var [(${prid})]POST_SELECT_GRIDLIST = "PPE|POST|/eo/selectLogisticsYearEvaluationList";
+	var [(${prid})]POST_SAVE_GRIDLIST = "PPE|POST|/eo/insertLogisticsYearEvaluation";
+	var [(${prid})]POST_DELETE_GRIDLIST = "PPE|POST|/eo/deleteLogisticsYearEvaluationInfo";
+
+	var [(${prid})]grid1;			//그리드
+	var [(${prid})]comboList;		//평가명 목록
+	var [(${prid})]lastYear;			//마지막년도
+	var [(${prid})]searchYn = false;;		//마지막년도
+
+
+/********************************************************************************************
+*************************** 초기화 ************************
+*********************************************************************************************/
+
+	$(document).ready(function(){
+
+		[(${prid})]selectBoxInit();
+
+		[(${prid})]ibsheetInit();
+
+		[(${prid})]uiEvent();
+
+	});
+
+	//셀렉트박스 초기화
+	var [(${prid})]selectBoxInit = function () {
+
+	};
+
+
+/********************************************************************************************
+*************************** 그리드 ************************
+*********************************************************************************************/
+
+	//IBSheet Initialize
+	var [(${prid})]ibsheetInit = function () {
+
+		var choice = [[#{choice}]];			//선택
+		var year = [[#{year}]];				//년도
+		var evaluationName = [[#{evaluationName}]];	//평가명
+		var regVndrCnt = [[#{regVndrCnt}]];			//등록업체
+		var mainEval = [[#{mainEval}]];		//본평가
+		var PlantPmPerformEvaluation = [[#{PlantPmPerformEvaluation}]];		//본평가
+		var ctrtRt = [[#{ctrtRt}]];			//계약율
+		var bidBbdgtRt = [[#{bidBbdgtRt}]];		//예산대비 투찰율
+		var tenderPartic = [[#{tenderPartic}]];		//입찰참여도
+		var bidRnk = [[#{bidRnk}]];			//입찰순위
+		var ctrtCnt = [[#{ctrtCnt}]];		//계약건수
+		var bidRt = [[#{bidRt}]];			//투찰율
+		var crdtRtg = [[#{crdtRtg}]];			//신용등급
+		var totalReqPer = [[#{totalReqPer}]];			//수주견적제출율
+
+	    //IBSheet8 객체 초기화 속성 설정
+	    var sheetOptions = {
+	        Cfg: {
+	            SearchMode: 2,	// ClientPaging
+	            FitWidth: true,	// 화면 꽉차게 표시
+	            CanSort: false,   // 정렬 기능 사용 안함
+	            HeaderMerge: 5,  // 시트 생성 시 헤더 영역의 셀 병합을 진행하지 않습니다.
+	            RequiredPosition: "Right"
+	        },
+	        Cols: [
+                {Header: [choice,choice], Name: "check", Type: "Bool", Width: 50, Align: "Center", CanEdit: 1}
+	        	, {Header: ["No","No"], Name: "SEQ", Width: 50, CanEdit: 0, Align:"Center"}
+                , {Header: [year,year], Name: "evYr", Type: "Date", Width: 120, Align: "Center", CanEdit: 0, Format: "yyyy", DataFormat: "yyyy", EditFormat: "yyyy", Required: 1, Size:4}
+                , {Header: [evaluationName,evaluationName], Name: "pfevNm", Type: "Text", Width: 180, Align: "Center", CanEdit: 0}
+                , {Header: [regVndrCnt,"총업체수"], Name: "evTgtVndrCnt", Type: "Int", Width: 120, Align: "Right", CanEdit: 0,Format: "#,##0"}
+                , {Header: [regVndrCnt,"제외대상업체수"], Name: "vndrExcpTotCnt", Type: "Int", Width: 120, Align: "Right", CanEdit: 0,Format: "#,##0"}
+                , {Header: [regVndrCnt,"평가업체수"], Name: "evVndrCnt", Type: "Int", Width: 120, Align: "Right", CanEdit: 0,Format: "#,##0"}
+                , {Header: ["일회성업체\n평가업체수","일회성업체\n평가업체수"], Name: "otVndrCnt", Type: "Int", Width: 120, Align: "Right", CanEdit: 0,Format: "#,##0"}
+                , {Header: [mainEval,"수주견적(20점)"], Name: "ctrtDtm", Type: "Text", Width: 200, Align: "Center", CanEdit: 0}
+                , {Header: [mainEval,"계약실적(30점)"], Name: "smbidDtm", Type: "Text", Width: 200, Align: "Center", CanEdit: 0}
+                , {Header: [mainEval,"수행도(20점)"], Name: "bidRankDtm", Type: "Text", Width: 200, Align: "Center", CanEdit: 0}
+                , {Header: [mainEval,"업무협조도(10점)"], Name: "bidPrtcDtm", Type: "Text", Width: 200, Align: "Center", CanEdit: 0}
+                , {Header: ["",""], Name: "evTgtStrtDtm", Type: "Text", Width: 100, Align: "Center", CanEdit: 0, Visible: 0}
+                , {Header: ["",""], Name: "evTgtEndDtm", Type: "Text", Width: 100, Align: "Center", CanEdit: 0, Visible: 0}
+                , {Header: ["",""], Name: "evTpCd", Type: "Text", Width: 100, Align: "Center", CanEdit: 0, Visible: 0}
+                , {Header: ["",""], Name: "evDivCd", Type: "Text", Width: 100, Align: "Center", CanEdit: 0, Visible: 0}
+                , {Header: ["",""], Name: "evSeq", Type: "Text", Width: 100, Align: "Center", CanEdit: 0, Visible: 0}
+	        ],
+	        // 이벤트
+	        Events: {
+	            onClick : function(evtParam) {
+					//수행도평가 시트 팝업
+	            	if(evtParam.kind == 'Header'){
+	            		return;
+	            	}
+
+	            },
+	            onRowLoad : function(paramObject) {
+
+	            	var tmp = new Date(paramObject.row.evYr);
+	            	var year = tmp.getFullYear();
+
+					if([(${prid})]lastYear != year){
+						[(${prid})]grid1.setAttribute(paramObject.row, "check", "CanEdit", 0);
+						[(${prid})]grid1.setAttribute(paramObject.row, "evYr", "CanEdit", 0);
+					}
+
+	            },
+	            onAfterChange : function(paramObject) {
+
+	            	if(paramObject.col == 'evYr'){
+
+	            		var tmp = new Date(paramObject.row.evYr);
+		            	var evalNm = tmp.getFullYear() + '년 종합평가';
+						var frDtm = tmp.getFullYear() + "-01-01";
+						var toDtm = tmp.getFullYear() + "-10-31";
+						var dtm = frDtm + "~" + toDtm;
+
+	            		[(${prid})]grid1.setValue(paramObject.row, "pfevNm", evalNm);
+	            		[(${prid})]grid1.setValue(paramObject.row, "ctrtDtm", dtm);
+	            		[(${prid})]grid1.setValue(paramObject.row, "smbidDtm", dtm);
+	            		[(${prid})]grid1.setValue(paramObject.row, "bidRankDtm", dtm);
+	            		[(${prid})]grid1.setValue(paramObject.row, "bidPrtcDtm", dtm);
+	            		[(${prid})]grid1.setValue(paramObject.row, "evTgtStrtDtm", frDtm);
+	            		[(${prid})]grid1.setValue(paramObject.row, "evTgtEndDtm", toDtm);
+
+	            	}
+	            }
+	        }
+	    };
+
+	    // 필요시 생성전 객체 제거
+	    if([(${prid})]grid1){
+	    	[(${prid})]grid1.dispose();
+	    }
+
+	    // IBSheet8 객체 생성
+	    [(${prid})]grid1 = IBSheet.create({
+	        el: "[(${prid})]grid1Div",     	// 시트를 생성할 DIV객체 ID
+	        options: sheetOptions,  // 초기화 구문 변수
+	    });
+
+	};
+
+
+/********************************************************************************************
+*************************** 콜백 ************************
+*********************************************************************************************/
+
+
+/********************************************************************************************
+*************************** 이벤트 ************************
+*********************************************************************************************/
+
+	var [(${prid})]uiEvent = function() {
+		//조회버튼
+		$("#[(${prid})]btnSelect").click(function(){
+
+			[(${prid})]searchYn = true;
+
+			[(${prid})]selectGridList();
+
+		});
+
+		//추가
+		$("#[(${prid})]btnAdd").click(function(){
+
+			if([(${prid})]searchYn == false){
+				return;
+			}
+
+			[(${prid})]grid1.addRow( {"next":[(${prid})]grid1.getFirstRow(), "init" : {"newYN" : 1}} )
+			[(${prid})]grid1.setAttribute([(${prid})]grid1.getRowsByStatus("Added")[0], "evYr", "CanEdit", 1);
+
+		});
+
+		//삭제
+		$("#[(${prid})]btnDel").click(function(){
+
+			var checkRows = [(${prid})]grid1.getRowsByChecked("check");
+
+			if(checkRows.length == 0){
+				$popup.show({
+		            type: "alert",
+		            contents: { body: [[#{biz.warn.PPE.016}]] } //선택된 데이터가 없습니다.
+		        });
+				return;
+			}
+
+			for (var i = 0; i < checkRows.length; i++) {
+				if(checkRows[i].newYN == '1'){
+					//신규행이면 삭제
+					[(${prid})]grid1.removeRow(checkRows[i], null, 1);
+					[(${prid})]grid1.renderBody(); // 무조건 해주어야 다른 동작이 일어남.
+
+				} else {
+					[(${prid})]grid1.deleteRow({row:checkRows[i], del:1});
+				}
+			}
+
+			var rows = [(${prid})]grid1.getSaveJson().data;
+
+			if(rows.length > 0){
+
+				$popup.show({
+					type: "confirm",
+					contents: {body: "삭제 하시겠습니까?"},
+					ok: function () {
+
+						[(${prid})]doDelete(rows);
+
+					}
+				});
+			}
+
+		});
+
+		//저장
+		$("#[(${prid})]btnSave").click(function(){
+
+			var saveGrid = [(${prid})]grid1.getSaveJson({validRequired : 0}).data;
+
+			if(saveGrid.length == 0){
+				$popup.show({
+		            type: "alert",
+		            contents: {body: "저장할 데이터가 없습니다."},
+		        });
+				return;
+			}
+
+			//그리드 유효성 체크
+			if(![(${prid})]checkSaveGrid(saveGrid)){
+				return;
+			}
+
+			$popup.show({
+				type: "confirm",
+				contents: {body: "저장 하시겠습니까?"},
+				ok: function () {
+
+					[(${prid})]doSave(saveGrid);
+
+				}
+			});
+
+
+		});
+
+	}
+
+
+/********************************************************************************************
+*************************** 사용자 정의 함수 ************************
+*********************************************************************************************/
+
+	//Grid 데이터 조회
+	var [(${prid})]selectGridList = function () {
+	    // callback 함수 선언
+	    var callbackData = function (data) {
+
+	    	var grid = data.data;
+
+			var lastYearArr = grid.filter((year, index, target) => {
+			    var last = Math.max(...target.map(val => val.evYr));
+			    return year.evYr == last;
+			});
+
+			if(lastYearArr.length > 0){
+				[(${prid})]lastYear = Number(lastYearArr[0].evYr);
+			}
+
+	        // IBSheet 데이터 로드
+	        [(${prid})]grid1.loadSearchData(data.data);
+
+	        // 데이터 조회 완료 토스트 팝업 생성
+	        $popup.show({
+	            type: "toast",
+	            contents: {body: [[#{biz.info.com.001}]]},
+	            showTime: 2500
+	        });
+	    };
+
+
+		var param = {
+		};
+	    // Ajax Option
+	    var opt = {
+	        data: param,
+	        callback: callbackData
+	    };
+
+	    // Ajax Call
+	    $util.ajax([(${prid})]POST_SELECT_GRIDLIST, opt);
+	};
+
+	//저장
+	var [(${prid})]doSave = function (saveGrid) {
+	    // callback 함수 선언
+	    var callbackData = function (data) {
+
+	        // 데이터 조회 완료 토스트 팝업 생성
+	        $popup.show({
+	            type: "toast",
+	            contents: {body: [[#{biz.info.com.001}]]},
+	            showTime: 2500
+	        });
+
+	        [(${prid})]selectGridList();
+	    };
+
+		var param = {
+				saveGrid : saveGrid
+		};
+	    // Ajax Option
+	    var opt = {
+	        data: param,
+	        callback: callbackData
+	    };
+
+	    // Ajax Call
+	    $util.ajax([(${prid})]POST_SAVE_GRIDLIST, opt);
+	};
+
+	//삭제
+	var [(${prid})]doDelete = function (deleteGrid) {
+	    // callback 함수 선언
+	    var callbackData = function (data) {
+
+	        // 데이터 조회 완료 토스트 팝업 생성
+	        $popup.show({
+	            type: "toast",
+	            contents: {body: [[#{biz.info.com.001}]]},
+	            showTime: 2500
+	        });
+
+	        [(${prid})]selectGridList();
+	    };
+
+		var param = {
+				deleteGrid : deleteGrid
+		};
+	    // Ajax Option
+	    var opt = {
+	        header: [{key: "PEC-ACCESS-LEVEL", value: "PROTECTED"}], // array header
+	        data: param,
+	        callback: callbackData
+	    };
+
+	    // Ajax Call
+	    $util.ajax([(${prid})]POST_DELETE_GRIDLIST, opt);
+	};
+
+
+	//유효성 체크
+	[(${prid})]checkSaveGrid = function(data){
+
+		var cnt = data.length;
+		var orgGrid = [(${prid})]grid1.getDataRows();
+		var filterOrgGrid = orgGrid.filter(d => d.newYN == null);
+		var year;
+
+		for(var i=0; i<cnt;i++){
+			if(data[i].evYr == ''){
+
+				$popup.show({
+		            type: "alert",
+		            contents: {body: "년도를 입력해 주세요."},
+		        });
+
+				return false;
+			}
+
+			//동일년도 체크
+			if(filterOrgGrid.length > 0){
+				for(var j=0; j<filterOrgGrid.length;j++){
+					var year = new Date(filterOrgGrid[j].evYr).getFullYear();
+
+					if( year == data[i].evYr) {
+						$popup.show({
+				            type: "alert",
+				            contents: {body: "동일한 년도가 있습니다."},
+				        });
+
+						return false;
+					}
+				}
+			}
+		}
+
+		return true;
+	}
+
+    </script>
+</th:block>

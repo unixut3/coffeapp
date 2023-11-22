@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+  @Description 설명
+  @author S13613
+  @Copyright (c) 2023 POSCO E&C All rights reserved.
+
+ ==========================================================================================
+  Modification Information
+ ==========================================================================================
+  수정일                		 수정자          수정내용
+  ==========================================================================================
+  2023. 06. 30                   S13613        최초생성
+-->
+<mapper namespace="com.pec.ppe.eo.service.mapper.LogisticsYearEvaluationMapper">
+
+
+</mapper>
